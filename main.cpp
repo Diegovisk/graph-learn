@@ -5,18 +5,6 @@
 
 int main(int argc, char const *argv[])
 {
-    MatrizAdjacente matriz(5);
-    matriz.adicionarVertice();
-    matriz.adicionarAresta(1, 2);
-    matriz.adicionarAresta(2, 2);
-    matriz.adicionarAresta(2, 4);
-    matriz.adicionarAresta(1, 3);
-    matriz.adicionarAresta(1, 5);
-    matriz.adicionarAresta(5, 0);
-    matriz.imprimir();
-    matriz.DFS(1);
-
-    std::cout << std::endl;
 
     ListaAdjacente lista(4);
     lista.adicionarVertice();
@@ -28,7 +16,22 @@ int main(int argc, char const *argv[])
     lista.adicionarAresta(5, 0);
     // lista.removerAresta(2, 2);
     lista.imprimir();
+    lista.BFS(1);
     lista.DFS(1);
+
+    std::cout << std::endl;
+
+    MatrizAdjacente matriz(5);
+    matriz.adicionarVertice();
+    matriz.adicionarAresta(1, 2);
+    matriz.adicionarAresta(2, 2);
+    matriz.adicionarAresta(2, 4);
+    matriz.adicionarAresta(1, 3);
+    matriz.adicionarAresta(1, 5);
+    matriz.adicionarAresta(5, 0);
+    matriz.imprimir();
+    matriz.BFS(1);
+    matriz.DFS(1);
 
     return 0;
 }

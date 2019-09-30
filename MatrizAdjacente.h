@@ -25,7 +25,7 @@ public:
     void removerAresta(Vertex u, Vertex v);
     int grauVertice(Vertex v);
     void DFS(Vertex v);
-
+    void BFS(Vertex v);
 };
 
 MatrizAdjacente::MatrizAdjacente(Vertex v, bool direcionado) : vertices(v), direcionado(direcionado)
@@ -94,7 +94,7 @@ MatrizAdjacente::~MatrizAdjacente()
 
 void MatrizAdjacente::DFS(Vertex v)
 {
-    Vertex* visitado = new Vertex[this->vertices] ();
+    Vertex* visitado = new Vertex[this->vertices+1] ();
     std::cout << "Caminho: ";
     DFS_interno(v,visitado);
     delete[] visitado;
@@ -110,6 +110,39 @@ void MatrizAdjacente::DFS_interno(Vertex v, Vertex* visitado)
     for (int i = 0; i < this->vertices; i++) 
         if (this->mat[v][i] != 0 && !visitado[i]) 
             DFS_interno(i, visitado); 
+}
+
+void MatrizAdjacente::BFS(Vertex v)
+{
+    Vertex* visitado = new Vertex[this->vertices+1] ();
+
+    std::list<Vertex> fila; 
+  
+    visitado[v] = true; 
+    fila.push_back(v); 
+  
+    std::vector<Vertex>::iterator i; 
+
+    std::cout << "Caminho: ";
+  
+    while(!fila.empty()) 
+    { 
+        v = fila.front(); 
+        std::cout << v << " "; 
+        fila.pop_front(); 
+  
+        for (int i = 0; i < this->vertices; i++) 
+        { 
+            if (this->mat[v][i] != 0 && !visitado[i]) 
+            { 
+                visitado[i] = true; 
+                fila.push_back(i); 
+            } 
+        } 
+    } 
+
+    std::cout << std::endl;
+    delete[] visitado;
 }
 
 #endif

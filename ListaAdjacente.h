@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <list>
 
 #include "Grafo.h"
 
@@ -22,6 +23,7 @@ public:
     void removerAresta(Vertex u, Vertex v);
     int grauVertice(Vertex v);
     void DFS(Vertex v);
+    void BFS(Vertex v);
 private:
     void DFS_interno(Vertex v, Vertex* visitado);
 };
@@ -93,7 +95,7 @@ int ListaAdjacente::grauVertice(Vertex v)
 
 void ListaAdjacente::DFS(Vertex v)
 {
-    Vertex* visitado = new Vertex[this->vertices] ();
+    Vertex* visitado = new Vertex[this->vertices+1] ();
     std::cout << "Caminho: ";
     DFS_interno(v,visitado);
     std::cout << std::endl;
@@ -112,6 +114,38 @@ void ListaAdjacente::DFS_interno(Vertex v, Vertex* visitado)
         if (!visitado[*i]) 
             DFS_interno(*i, visitado); 
     	
+}
+
+void ListaAdjacente::BFS(Vertex v){
+    Vertex* visitado = new Vertex[this->vertices+1] ();
+
+    std::list<Vertex> fila; 
+  
+    visitado[v] = true; 
+    fila.push_back(v); 
+  
+    std::vector<Vertex>::iterator i; 
+
+    std::cout << "Caminho: ";
+  
+    while(!fila.empty()) 
+    { 
+        v = fila.front(); 
+        std::cout << v << " "; 
+        fila.pop_front(); 
+  
+        for (i = adj[v].begin(); i != adj[v].end(); ++i) 
+        { 
+            if (!visitado[*i]) 
+            { 
+                visitado[*i] = true; 
+                fila.push_back(*i); 
+            } 
+        } 
+    } 
+
+    std::cout << std::endl;
+    delete[] visitado;
 }
 
 #endif
