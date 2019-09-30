@@ -1,12 +1,12 @@
-#include "ListaAdjacente.h"
+#include "ListaAdjacencia.h"
 #include <iostream>
 #include <vector>
-#include "MatrizAdjacente.h"
+#include "MatrizAdjacencia.h"
 
 int main(int argc, char const *argv[])
 {
 
-    ListaAdjacente lista(4);
+    ListaAdjacencia lista(4);
     lista.adicionarVertice();
     lista.adicionarAresta(1, 2);
     lista.adicionarAresta(2, 2);
@@ -18,10 +18,11 @@ int main(int argc, char const *argv[])
     lista.imprimir();
     lista.BFS(1);
     lista.DFS(1);
+    lista.ordenacao_topologica();
 
     std::cout << std::endl;
 
-    MatrizAdjacente matriz(5);
+    MatrizAdjacencia matriz(5);
     matriz.adicionarVertice();
     matriz.adicionarAresta(1, 2);
     matriz.adicionarAresta(2, 2);
@@ -32,6 +33,7 @@ int main(int argc, char const *argv[])
     matriz.imprimir();
     matriz.BFS(1);
     matriz.DFS(1);
+    matriz.ordenacao_topologica();
 
     return 0;
 }

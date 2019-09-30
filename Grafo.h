@@ -15,8 +15,10 @@ public:
     virtual void imprimir() = 0;
     virtual void DFS(Vertex v) = 0;
     virtual void BFS(Vertex v) = 0;
+    virtual void ordenacao_topologica() = 0;
 protected:
     virtual void DFS_interno(Vertex v, Vertex* visitado) = 0;
+    virtual void ot_interno(Vertex v, Vertex* visitado, std::stack<Vertex> &Pilha) = 0;
 };
 
 #endif

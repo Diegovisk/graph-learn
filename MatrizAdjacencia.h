@@ -3,22 +3,26 @@
 
 #include <iostream>
 #include <iomanip>
+#include <list>
+#include <stack>
 
 #define NUMVERTICES 100
 
 #include "Grafo.h"
 
-class MatrizAdjacente : public Grafo
+class MatrizAdjacencia : public Grafo
 {
 private:
     bool direcionado;
     Vertex vertices;
     Weight mat[NUMVERTICES + 1][NUMVERTICES + 1];
+    
     void DFS_interno(Vertex v, Vertex* visitado);
+    void ot_interno(Vertex v, Vertex* visitado, std::stack<Vertex> &Pilha);
 
 public:
-    MatrizAdjacente(Vertex v, bool direcionado = false);
-    ~MatrizAdjacente();
+    MatrizAdjacencia(Vertex v, bool direcionado = false);
+    ~MatrizAdjacencia();
     void adicionarVertice();
     void adicionarAresta(Vertex u, Vertex v, Weight w);
     void imprimir();
@@ -26,9 +30,10 @@ public:
     int grauVertice(Vertex v);
     void DFS(Vertex v);
     void BFS(Vertex v);
+    void ordenacao_topologica();
 };
 
-MatrizAdjacente::MatrizAdjacente(Vertex v, bool direcionado) : vertices(v), direcionado(direcionado)
+MatrizAdjacencia::MatrizAdjacencia(Vertex v, bool direcionado) : vertices(v), direcionado(direcionado)
 {
     for (int i = 0; i <= this->vertices; i++)
     {
@@ -39,26 +44,26 @@ MatrizAdjacente::MatrizAdjacente(Vertex v, bool direcionado) : vertices(v), dire
     }
 }
 
-void MatrizAdjacente::adicionarVertice()
+void MatrizAdjacencia::adicionarVertice()
 {
     this->vertices++;
 }
 
-void MatrizAdjacente::adicionarAresta(Vertex u, Vertex v, Weight w = 1)
+void MatrizAdjacencia::adicionarAresta(Vertex u, Vertex v, Weight w = 1)
 {
     this->mat[u][v] = w;
     if (!this->direcionado)
         this->mat[v][u] = w;
 }
 
-void MatrizAdjacente::removerAresta(Vertex u, Vertex v)
+void MatrizAdjacencia::removerAresta(Vertex u, Vertex v)
 {
     this->mat[u][v] = 0;
     if (!this->direcionado)
         this->mat[v][u] = 0;
 }
 
-int MatrizAdjacente::grauVertice(Vertex v)
+int MatrizAdjacencia::grauVertice(Vertex v)
 {
     int sum = 0;
     for (int i = 0; i <= this->vertices; i++)
@@ -68,7 +73,7 @@ int MatrizAdjacente::grauVertice(Vertex v)
     return sum;
 }
 
-void MatrizAdjacente::imprimir()
+void MatrizAdjacencia::imprimir()
 {
     int k = 3; // largura de campo
     std::cout << "    ";
@@ -88,19 +93,20 @@ void MatrizAdjacente::imprimir()
     }
 }
 
-MatrizAdjacente::~MatrizAdjacente()
+MatrizAdjacencia::~MatrizAdjacencia()
 {
 }
 
-void MatrizAdjacente::DFS(Vertex v)
+void MatrizAdjacencia::DFS(Vertex v)
 {
     Vertex* visitado = new Vertex[this->vertices+1] ();
-    std::cout << "Caminho: ";
+    std::cout << "Caminho (DFS): ";
     DFS_interno(v,visitado);
+    std::cout << std::endl;
     delete[] visitado;
 }
 
-void MatrizAdjacente::DFS_interno(Vertex v, Vertex* visitado)
+void MatrizAdjacencia::DFS_interno(Vertex v, Vertex* visitado)
 {
 
     visitado[v] = 1;
@@ -112,7 +118,7 @@ void MatrizAdjacente::DFS_interno(Vertex v, Vertex* visitado)
             DFS_interno(i, visitado); 
 }
 
-void MatrizAdjacente::BFS(Vertex v)
+void MatrizAdjacencia::BFS(Vertex v)
 {
     Vertex* visitado = new Vertex[this->vertices+1] ();
 
@@ -120,10 +126,8 @@ void MatrizAdjacente::BFS(Vertex v)
   
     visitado[v] = true; 
     fila.push_back(v); 
-  
-    std::vector<Vertex>::iterator i; 
 
-    std::cout << "Caminho: ";
+    std::cout << "Caminho (BFS): ";
   
     while(!fila.empty()) 
     { 
@@ -144,5 +148,38 @@ void MatrizAdjacente::BFS(Vertex v)
     std::cout << std::endl;
     delete[] visitado;
 }
+
+
+void MatrizAdjacencia::ot_interno(Vertex v, Vertex* visitado, std::stack<Vertex> &Pilha) 
+{ 
+    visitado[v] = true; 
+  
+    for (int i = 0; i < this->vertices; i++) 
+        if (this->mat[v][i] != 0 && !visitado[i]) 
+            ot_interno(i, visitado, Pilha); 
+  
+    Pilha.push(v); 
+} 
+  
+void MatrizAdjacencia::ordenacao_topologica() 
+{ 
+    std::stack<int> Pilha; 
+    Vertex* visitado = new Vertex[this->vertices+1] ();    
+  
+    for (int i = 0; i < this->vertices; i++) 
+      if (visitado[i] == false) 
+        ot_interno(i, visitado, Pilha); 
+    
+    std::cout << "Caminho (OT): ";
+    while (Pilha.empty() == false) 
+    { 
+        std::cout << Pilha.top() << " "; 
+        Pilha.pop(); 
+    } 
+    std::cout << std::endl;
+
+    delete[] visitado;
+} 
+
 
 #endif
