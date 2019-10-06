@@ -16,9 +16,9 @@ private:
     bool direcionado;
     Vertex vertices;
     Weight mat[NUMVERTICES + 1][NUMVERTICES + 1];
-    
-    void DFS_interno(Vertex v, Vertex* visitado);
-    void ot_interno(Vertex v, Vertex* visitado, std::stack<Vertex> &Pilha);
+
+    void DFS_interno(Vertex v, Vertex *visitado);
+    void ot_interno(Vertex v, Vertex *visitado, std::stack<Vertex> &Pilha);
 
 public:
     MatrizAdjacencia(Vertex v, bool direcionado = false);
@@ -27,7 +27,7 @@ public:
     void adicionarAresta(Vertex u, Vertex v, Weight w);
     void imprimir();
     void removerAresta(Vertex u, Vertex v);
-    int grauVertice(Vertex v);
+    void grauVertice(Vertex v);
     void DFS(Vertex v);
     void BFS(Vertex v);
     void ordenacao_topologica();
@@ -35,7 +35,7 @@ public:
 
 MatrizAdjacencia::MatrizAdjacencia(Vertex v, bool direcionado) : vertices(v), direcionado(direcionado)
 {
-    for (int i = 0; i <= this->vertices; i++)
+    for (int i = 0; i < this->vertices; i++)
     {
         for (int j = 0; j < this->vertices; j++)
         {
@@ -63,14 +63,33 @@ void MatrizAdjacencia::removerAresta(Vertex u, Vertex v)
         this->mat[v][u] = 0;
 }
 
-int MatrizAdjacencia::grauVertice(Vertex v)
+void MatrizAdjacencia::grauVertice(Vertex v)
 {
-    int sum = 0;
-    for (int i = 0; i <= this->vertices; i++)
+    if (this->direcionado)
     {
-        sum += this->mat[v][i];
+        int grau_saida = 0;
+        for (int i = 0; i < this->vertices; i++)
+        {
+            grau_saida += (this->mat[v][i] > 0 ? 1 : 0);
+        }
+
+        int grau_entrada = 0;
+        for (int i = 0; i < this->vertices; i++)
+        {
+            grau_entrada += (this->mat[i][v] > 0 ? 1 : 0);
+        }
+
+        std::cout << "grau entrada: " << grau_entrada << " | grau saida: " << grau_saida << std::endl;
+    }else {
+
+        int sum = 0;
+        for (int i = 0; i < this->vertices; i++)
+        {
+            sum += (this->mat[v][i] > 0 ? 1 : 0);
+        }
+
+        std::cout << "grau vertice: " << sum << std::endl;
     }
-    return sum;
 }
 
 void MatrizAdjacencia::imprimir()
@@ -80,7 +99,7 @@ void MatrizAdjacencia::imprimir()
     for (int j = 0; j < this->vertices; j++)
         std::cout << std::setw(k) << j;
     std::cout << std::endl;
-    for (int j = 0; j < this->vertices * k + 3; j++)
+    for (int j = 0; j <= this->vertices * k + 3; j++)
         std::cout << "-";
     std::cout << std::endl;
     for (int i = 0; i < this->vertices; i++)
@@ -99,87 +118,85 @@ MatrizAdjacencia::~MatrizAdjacencia()
 
 void MatrizAdjacencia::DFS(Vertex v)
 {
-    Vertex* visitado = new Vertex[this->vertices+1] ();
+    Vertex *visitado = new Vertex[this->vertices + 1]();
     std::cout << "Caminho (DFS): ";
-    DFS_interno(v,visitado);
+    DFS_interno(v, visitado);
     std::cout << std::endl;
     delete[] visitado;
 }
 
-void MatrizAdjacencia::DFS_interno(Vertex v, Vertex* visitado)
+void MatrizAdjacencia::DFS_interno(Vertex v, Vertex *visitado)
 {
 
     visitado[v] = 1;
 
     std::cout << v << " ";
-    
-    for (int i = 0; i < this->vertices; i++) 
-        if (this->mat[v][i] != 0 && !visitado[i]) 
-            DFS_interno(i, visitado); 
+
+    for (int i = 0; i < this->vertices; i++)
+        if (this->mat[v][i] != 0 && !visitado[i])
+            DFS_interno(i, visitado);
 }
 
 void MatrizAdjacencia::BFS(Vertex v)
 {
-    Vertex* visitado = new Vertex[this->vertices+1] ();
+    Vertex *visitado = new Vertex[this->vertices + 1]();
 
-    std::list<Vertex> fila; 
-  
-    visitado[v] = true; 
-    fila.push_back(v); 
+    std::list<Vertex> fila;
+
+    visitado[v] = true;
+    fila.push_back(v);
 
     std::cout << "Caminho (BFS): ";
-  
-    while(!fila.empty()) 
-    { 
-        v = fila.front(); 
-        std::cout << v << " "; 
-        fila.pop_front(); 
-  
-        for (int i = 0; i < this->vertices; i++) 
-        { 
-            if (this->mat[v][i] != 0 && !visitado[i]) 
-            { 
-                visitado[i] = true; 
-                fila.push_back(i); 
-            } 
-        } 
-    } 
+
+    while (!fila.empty())
+    {
+        v = fila.front();
+        std::cout << v << " ";
+        fila.pop_front();
+
+        for (int i = 0; i < this->vertices; i++)
+        {
+            if (this->mat[v][i] != 0 && !visitado[i])
+            {
+                visitado[i] = true;
+                fila.push_back(i);
+            }
+        }
+    }
 
     std::cout << std::endl;
     delete[] visitado;
 }
 
+void MatrizAdjacencia::ot_interno(Vertex v, Vertex *visitado, std::stack<Vertex> &Pilha)
+{
+    visitado[v] = true;
 
-void MatrizAdjacencia::ot_interno(Vertex v, Vertex* visitado, std::stack<Vertex> &Pilha) 
-{ 
-    visitado[v] = true; 
-  
-    for (int i = 0; i < this->vertices; i++) 
-        if (this->mat[v][i] != 0 && !visitado[i]) 
-            ot_interno(i, visitado, Pilha); 
-  
-    Pilha.push(v); 
-} 
-  
-void MatrizAdjacencia::ordenacao_topologica() 
-{ 
-    std::stack<int> Pilha; 
-    Vertex* visitado = new Vertex[this->vertices+1] ();    
-  
-    for (int i = 0; i < this->vertices; i++) 
-      if (visitado[i] == false) 
-        ot_interno(i, visitado, Pilha); 
-    
+    for (int i = 0; i < this->vertices; i++)
+        if (this->mat[v][i] != 0 && !visitado[i])
+            ot_interno(i, visitado, Pilha);
+
+    Pilha.push(v);
+}
+
+void MatrizAdjacencia::ordenacao_topologica()
+{
+    std::stack<int> Pilha;
+    Vertex *visitado = new Vertex[this->vertices + 1]();
+
+    for (int i = 0; i < this->vertices; i++)
+        if (visitado[i] == false)
+            ot_interno(i, visitado, Pilha);
+
     std::cout << "Caminho (OT): ";
-    while (Pilha.empty() == false) 
-    { 
-        std::cout << Pilha.top() << " "; 
-        Pilha.pop(); 
-    } 
+    while (Pilha.empty() == false)
+    {
+        std::cout << Pilha.top() << " ";
+        Pilha.pop();
+    }
     std::cout << std::endl;
 
     delete[] visitado;
-} 
-
+}
 
 #endif
