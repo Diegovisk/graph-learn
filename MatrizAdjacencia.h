@@ -31,6 +31,7 @@ public:
     void DFS(Vertex v);
     void BFS(Vertex v);
     void ordenacao_topologica();
+    void MTSPrim();
 };
 
 MatrizAdjacencia::MatrizAdjacencia(Vertex v, bool direcionado) : vertices(v), direcionado(direcionado)
@@ -80,7 +81,9 @@ void MatrizAdjacencia::grauVertice(Vertex v)
         }
 
         std::cout << "grau entrada: " << grau_entrada << " | grau saida: " << grau_saida << std::endl;
-    }else {
+    }
+    else
+    {
 
         int sum = 0;
         for (int i = 0; i < this->vertices; i++)
@@ -96,17 +99,17 @@ void MatrizAdjacencia::imprimir()
 {
     int k = 3; // largura de campo
     std::cout << "    ";
-    for (int j = 0; j < this->vertices; j++)
+    for (int j = 0; j <= this->vertices; j++)
         std::cout << std::setw(k) << j;
     std::cout << std::endl;
-    for (int j = 0; j <= this->vertices * k + 3; j++)
+    for (int j = 0; j <= this->vertices * k + 6; j++)
         std::cout << "-";
     std::cout << std::endl;
-    for (int i = 0; i < this->vertices; i++)
+    for (int i = 0; i <= this->vertices; i++)
     {
         std::cout << std::setw(2) << i;
         std::cout << " |";
-        for (int j = 0; j < this->vertices; j++)
+        for (int j = 0; j <= this->vertices; j++)
             std::cout << std::setw(k) << this->mat[i][j];
         std::cout << std::endl;
     }
@@ -197,6 +200,75 @@ void MatrizAdjacencia::ordenacao_topologica()
     std::cout << std::endl;
 
     delete[] visitado;
+}
+
+void MatrizAdjacencia::MTSPrim()
+{
+    bool tree[1000];
+    int preco[1000];
+
+    Vertex *pa = new Vertex[this->vertices + 1]();
+
+    for (int i = 0; i <= this->vertices; i++)
+    {
+        pa[i] = -1;
+        tree[i] = false;
+        preco[i] = INFINITY;
+    }
+
+    pa[0] = 0, tree[0] = true;
+
+    for (int i = 0; i <= this->vertices; ++i)
+    {
+        if (this->mat[0][i] > 0)
+        {
+            pa[i] = 0, preco[i] = this->mat[0][i];
+        }
+    }
+
+    while (true)
+    {
+        int min = INFINITY;
+        Vertex y;
+        for (int w = 0; w <= this->vertices; ++w)
+        {
+            if (tree[w])
+                continue;
+            if (preco[w] < min)
+                min = preco[w], y = w;
+        }
+        tree[y] = true;
+        if (min == INFINITY)
+            break;
+
+        for (int i = 0; i <= this->vertices; i++)
+        {
+            if (this->mat[y][i] > 0)
+            {
+                Vertex w = i;
+                if (tree[w])
+                    continue;
+                int cst = this->mat[y][i];
+                if (cst < preco[w])
+                {
+                    preco[w] = cst;
+                    pa[w] = y;
+                }
+            }
+        }
+    }
+
+    int sum = 0;
+    MatrizAdjacencia grafo(this->vertices);
+    for (int i = 0; i <= this->vertices; i++)
+    {
+        int peso = this->mat[i][pa[i]];
+        sum += peso;
+        grafo.adicionarAresta(i, pa[i], peso);
+    }
+
+    std::cout << "MST peso total " << sum << " :" << std::endl;
+    grafo.imprimir();
 }
 
 #endif

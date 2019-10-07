@@ -5,6 +5,7 @@
 #include <vector>
 #include <list>
 #include <stack>
+#include <algorithm>
 
 #include "Grafo.h"
 
@@ -35,6 +36,8 @@ public:
     void DFS(Vertex v);
     void BFS(Vertex v);
     void ordenacao_topologica();
+    void MTSPrim();
+    int peso(Vertex u, Vertex v);
 };
 
 ListaAdjacencia::ListaAdjacencia(Vertex v, bool direcionado = false) : vertices(v), direcionado(direcionado)
@@ -66,7 +69,7 @@ void ListaAdjacencia::adicionarAresta(Vertex u, Vertex v, Weight w = 1)
 
 void ListaAdjacencia::imprimir()
 {
-    for (int i = 0; i <= this->vertices; i++)
+    for (int i = 0; i < this->vertices; i++)
     {
         std::cout << "v[" << i << "] = ";
         for (int j = 0; j < this->adj[i].size(); j++)
@@ -213,6 +216,82 @@ void ListaAdjacencia::ordenacao_topologica()
     std::cout << std::endl;
 
     delete[] visitado;
+}
+
+void ListaAdjacencia::MTSPrim()
+{
+    bool tree[1000];
+    int preco[1000];
+    Vertex *pa = new Vertex[this->vertices + 1]();
+
+    for (int i = 0; i < this->vertices; i++)
+    {
+        pa[i] = -1;
+        tree[i] = false;
+        preco[i] = INFINITY;
+    }
+
+    pa[0] = 0, tree[0] = true;
+
+    std::vector<Aresta>::iterator i;
+    for (i = adj[0].begin(); i != adj[0].end(); ++i)
+    {
+        pa[i->destino] = 0, preco[i->destino] = i->peso;
+    }
+
+    while (true)
+    {
+        int min = INFINITY;
+        Vertex y;
+        for (int w = 0; w < this->vertices; ++w)
+        {
+            if (tree[w])
+                continue;
+            if (preco[w] < min)
+                min = preco[w], y = w;
+        }
+        tree[y] = true;
+        if (min == INFINITY)
+            break;
+
+        for (i = adj[y].begin(); i != adj[y].end(); ++i)
+        {
+            Vertex w = i->destino;
+            if (tree[w])
+                continue;
+            int cst = i->peso;
+            if (cst < preco[w])
+            {
+                preco[w] = cst;
+                pa[w] = y;
+            }
+        }
+    }
+
+    int sum = 0;
+    ListaAdjacencia lista(this->vertices);
+    for (int i = 0; i < this->vertices; i++)
+    {
+        int peso = this->peso(i, pa[i]);
+        sum += peso;
+        lista.adicionarAresta(i, pa[i], peso);
+    }
+    lista.removerAresta(0, 0);
+    std::cout << "MST peso total " << sum << " :" << std::endl;
+    lista.imprimir();
+}
+
+int ListaAdjacencia::peso(Vertex v, Vertex u)
+{
+    std::vector<Aresta>::iterator i;
+    for (i = adj[v].begin(); i != adj[v].end(); ++i)
+    {
+        if (i->destino == u)
+        {
+            return i->peso;
+        }
+    }
+    return 0;
 }
 
 #endif

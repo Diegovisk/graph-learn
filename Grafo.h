@@ -3,6 +3,7 @@
 
 typedef int Vertex;
 typedef int Weight;
+#define INFINITY 100000000
 
 class Grafo
 {
@@ -16,6 +17,7 @@ public:
     virtual void DFS(Vertex v) = 0;
     virtual void BFS(Vertex v) = 0;
     virtual void ordenacao_topologica() = 0;
+    virtual void MTSPrim() = 0;
 
 protected:
     virtual void DFS_interno(Vertex v, Vertex *visitado) = 0;
