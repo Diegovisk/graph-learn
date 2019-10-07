@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <list>
 #include <stack>
+#include <queue>
 
 #define NUMVERTICES 100
 
@@ -34,6 +35,7 @@ public:
     void MTSPrim();
     void MTSKruskal();
     void BellmanFord(Vertex);
+    int dijkstra(Vertex origem, Vertex destino);
     std::vector<Aresta> listaDeArestas();
 };
 
@@ -374,5 +376,52 @@ void MatrizAdjacencia::BellmanFord(Vertex origem)
     }
 
     return;
+}
+
+int MatrizAdjacencia::dijkstra(Vertex origem, Vertex destino)
+{
+    std::vector<Vertex> dist(this->vertices, INFINITY);
+    dist[origem] = 0;
+    std::vector<bool> visitados(this->vertices, false);
+
+    std::priority_queue<std::pair<int, Vertex>, std::vector<std::pair<int, Vertex>>, std::greater<std::pair<int, Vertex>>> pq;
+
+    // insere na fila
+    pq.push(std::make_pair(dist[origem], origem));
+
+    // loop do algoritmo
+    while (!pq.empty())
+    {
+        std::pair<int, Vertex> p = pq.top(); // extrai o pair do topo
+        int u = p.second;                    // obtém o vértice do pair
+        pq.pop();                            // remove da fila
+
+        // verifica se o vértice não foi expandido
+        if (visitados[u] == false)
+        {
+            // marca como visitado
+            visitados[u] = true;
+
+            // percorre os vértices "v" adjacentes de "u"
+            for (int i = 0; i <= this->vertices; i++)
+            {
+                if (this->mat[u][i] > 0)
+                {
+                    int v = i;
+                    int custo_aresta = this->mat[u][i];
+
+                    if (dist[v] > (dist[u] + custo_aresta))
+                    {
+
+                        dist[v] = dist[u] + custo_aresta;
+                        pq.push(std::make_pair(dist[v], v));
+                    }
+                }
+            }
+        }
+    }
+
+    // retorna a distância mínima até o destino
+    return dist[destino];
 }
 #endif

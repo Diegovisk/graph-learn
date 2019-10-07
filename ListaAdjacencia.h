@@ -6,6 +6,7 @@
 #include <list>
 #include <stack>
 #include <algorithm>
+#include <queue>
 
 #include "Grafo.h"
 
@@ -33,6 +34,7 @@ public:
     void MTSPrim();
     void MTSKruskal();
     void BellmanFord(Vertex);
+    int dijkstra(Vertex origem, Vertex destino);
     int peso(Vertex u, Vertex v);
     std::vector<Aresta> listaDeArestas();
 };
@@ -387,5 +389,53 @@ std::vector<Aresta> ListaAdjacencia::listaDeArestas()
         }
     }
     return arestas;
+}
+
+int ListaAdjacencia::dijkstra(Vertex origem, Vertex destino)
+{
+    std::vector<Vertex> dist(this->vertices, INFINITY);
+    dist[origem] = 0;
+    std::vector<bool> visitados(this->vertices, false);
+
+    std::priority_queue<std::pair<int, Vertex>, std::vector<std::pair<int, Vertex>>, std::greater<std::pair<int, Vertex>>> pq;
+
+    // insere na fila
+    pq.push(std::make_pair(dist[origem], origem));
+
+    // loop do algoritmo
+    while (!pq.empty())
+    {
+        std::pair<int, Vertex> p = pq.top(); // extrai o pair do topo
+        int u = p.second;                    // obtém o vértice do pair
+        pq.pop();                            // remove da fila
+
+        // verifica se o vértice não foi expandido
+        if (visitados[u] == false)
+        {
+            // marca como visitado
+            visitados[u] = true;
+
+            std::vector<Aresta>::iterator it;
+
+            // percorre os vértices "v" adjacentes de "u"
+            for (it = adj[u].begin(); it != adj[u].end(); it++)
+            {
+                // obtém o vértice adjacente e o custo da aresta
+                int v = it->destino;
+                int custo_aresta = it->peso;
+
+                // relaxamento (u, v)
+                if (dist[v] > (dist[u] + custo_aresta))
+                {
+                    // atualiza a distância de "v" e insere na fila
+                    dist[v] = dist[u] + custo_aresta;
+                    pq.push(std::make_pair(dist[v], v));
+                }
+            }
+        }
+    }
+
+    // retorna a distância mínima até o destino
+    return dist[destino];
 }
 #endif

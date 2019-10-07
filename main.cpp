@@ -27,6 +27,7 @@ int main(int argc, char const *argv[])
     lista.MTSPrim();
     lista.MTSKruskal();
     lista.BellmanFord(0);
+    std::cout << "dijkstra: " << lista.dijkstra(0, 6) << std::endl;
 
     std::cout << std::endl;
 
@@ -51,6 +52,7 @@ int main(int argc, char const *argv[])
     matriz.MTSPrim();
     matriz.MTSKruskal();
     matriz.BellmanFord(0);
+    std::cout << "dijkstra: " << matriz.dijkstra(0, 6) << std::endl;
 
     return 0;
 }

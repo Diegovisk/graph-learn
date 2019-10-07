@@ -29,6 +29,7 @@ public:
     virtual void MTSPrim() = 0;
     virtual void MTSKruskal() = 0;
     virtual void BellmanFord(Vertex) = 0;
+    virtual int dijkstra(Vertex origem, Vertex destino) = 0;
     virtual std::vector<Aresta> listaDeArestas() = 0;
 
 protected:
