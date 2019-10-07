@@ -337,13 +337,9 @@ std::vector<Aresta> MatrizAdjacencia::listaDeArestas()
 void MatrizAdjacencia::BellmanFord(Vertex origem)
 {
     std::vector<Aresta> arestas = this->listaDeArestas();
-    int V = this->vertices;
-    int E = arestas.size();
-    int dist[this->vertices + 1];
 
     //passo 1
-    for (int i = 0; i <= this->vertices; i++)
-        dist[i] = INFINITY;
+    std::vector<Vertex> dist(this->vertices + 1, INFINITY);
     dist[origem] = 0;
 
     //passo 2

@@ -336,13 +336,9 @@ void ListaAdjacencia::MTSKruskal()
 void ListaAdjacencia::BellmanFord(Vertex origem)
 {
     std::vector<Aresta> arestas = this->listaDeArestas();
-    int V = this->vertices;
-    int E = arestas.size();
-    int dist[this->vertices + 1];
 
     //passo 1
-    for (int i = 0; i <= this->vertices; i++)
-        dist[i] = INFINITY;
+    std::vector<Vertex> dist(this->vertices, INFINITY);
     dist[origem] = 0;
 
     //passo 2
@@ -358,7 +354,6 @@ void ListaAdjacencia::BellmanFord(Vertex origem)
 
     // passo 3
     for (i = arestas.begin(); i != arestas.end(); ++i)
-
     {
         int u = i->origem;
         int v = i->destino;
