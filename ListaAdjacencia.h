@@ -9,12 +9,6 @@
 
 #include "Grafo.h"
 
-struct Aresta
-{
-    Vertex destino;
-    Weight peso;
-};
-
 class ListaAdjacencia : public Grafo
 {
 private:
@@ -37,6 +31,7 @@ public:
     void BFS(Vertex v);
     void ordenacao_topologica();
     void MTSPrim();
+    void MTSKruskal();
     int peso(Vertex u, Vertex v);
 };
 
@@ -57,11 +52,13 @@ void ListaAdjacencia::adicionarVertice()
 void ListaAdjacencia::adicionarAresta(Vertex u, Vertex v, Weight w = 1)
 {
     Aresta aresta;
+    aresta.origem = u;
     aresta.destino = v;
     aresta.peso = w;
     this->adj[u].push_back(aresta);
     if (!this->direcionado && u != v)
     {
+        aresta.origem = v;
         aresta.destino = u;
         this->adj[v].push_back(aresta);
     }
@@ -292,6 +289,52 @@ int ListaAdjacencia::peso(Vertex v, Vertex u)
         }
     }
     return 0;
+}
+
+void ListaAdjacencia::MTSKruskal()
+{
+    std::vector<Aresta> arestas;
+    std::vector<Aresta> mst;
+
+    int pai[this->vertices];
+    int peso[10000];
+
+    std::vector<Aresta>::iterator i;
+    for (int v = 0; v < this->vertices; v++)
+    {
+        for (i = adj[v].begin(); i != adj[v].end(); ++i)
+        {
+            arestas.push_back(*i);
+        }
+    }
+
+    for (int i = 0; i <= this->vertices; i++)
+    {
+        pai[i] = i;
+    }
+
+    sort(arestas.begin(), arestas.end(), comp);
+
+    int size = 0;
+    for (int i = 0; i < arestas.size(); i++)
+    {
+
+        if (busca(arestas[i].origem, pai) != busca(arestas[i].destino, pai))
+        { // se estiverem em componentes distintos
+            uniao(arestas[i].origem, arestas[i].destino, peso, pai);
+
+            mst.push_back(arestas[i]);
+        }
+    }
+
+    ListaAdjacencia grafo(this->vertices);
+
+    for (i = mst.begin(); i != mst.end(); ++i)
+    {
+        grafo.adicionarAresta(i->origem, i->destino, i->peso);
+    }
+    std::cout << "MTS Kruskal: " << std::endl;
+    grafo.imprimir();
 }
 
 #endif

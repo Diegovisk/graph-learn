@@ -32,6 +32,7 @@ public:
     void BFS(Vertex v);
     void ordenacao_topologica();
     void MTSPrim();
+    void MTSKruskal();
 };
 
 MatrizAdjacencia::MatrizAdjacencia(Vertex v, bool direcionado) : vertices(v), direcionado(direcionado)
@@ -268,6 +269,60 @@ void MatrizAdjacencia::MTSPrim()
     }
 
     std::cout << "MST peso total " << sum << " :" << std::endl;
+    grafo.imprimir();
+}
+
+void MatrizAdjacencia::MTSKruskal()
+{
+    std::vector<Aresta> arestas;
+    std::vector<Aresta> mst;
+
+    int pai[this->vertices];
+    int peso[10000];
+
+    for (int v = 0; v <= this->vertices; v++)
+    {
+        for (int i = 0; i <= this->vertices; i++)
+        {
+            if (this->mat[v][i] > 0)
+            {
+                Aresta a;
+                a.origem = v;
+                a.destino = i;
+                a.peso = this->mat[v][i];
+                arestas.push_back(a);
+            }
+        }
+    }
+
+    for (int i = 0; i <= this->vertices; i++)
+    {
+        pai[i] = i;
+    }
+
+    sort(arestas.begin(), arestas.end(), comp);
+
+    int size = 0;
+    for (int i = 0; i < arestas.size(); i++)
+    {
+
+        if (busca(arestas[i].origem, pai) != busca(arestas[i].destino, pai))
+        { // se estiverem em componentes distintos
+            uniao(arestas[i].origem, arestas[i].destino, peso, pai);
+
+            mst.push_back(arestas[i]);
+        }
+    }
+
+    std::cout << mst.size() << std::endl;
+
+    MatrizAdjacencia grafo(this->vertices);
+    std::vector<Aresta>::iterator i;
+    for (i = mst.begin(); i != mst.end(); ++i)
+    {
+        grafo.adicionarAresta(i->origem, i->destino, i->peso);
+    }
+    std::cout << "MTS Kruskal: " << std::endl;
     grafo.imprimir();
 }
 

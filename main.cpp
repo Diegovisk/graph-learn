@@ -25,6 +25,7 @@ int main(int argc, char const *argv[])
     lista.ordenacao_topologica();
     lista.grauVertice(2);
     lista.MTSPrim();
+    lista.MTSKruskal();
 
     std::cout << std::endl;
 
@@ -47,6 +48,7 @@ int main(int argc, char const *argv[])
 
     matriz.grauVertice(1);
     matriz.MTSPrim();
+    matriz.MTSKruskal();
 
     return 0;
 }
