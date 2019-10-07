@@ -26,6 +26,7 @@ int main(int argc, char const *argv[])
     lista.grauVertice(2);
     lista.MTSPrim();
     lista.MTSKruskal();
+    lista.BellmanFord(0);
 
     std::cout << std::endl;
 
@@ -49,6 +50,7 @@ int main(int argc, char const *argv[])
     matriz.grauVertice(1);
     matriz.MTSPrim();
     matriz.MTSKruskal();
+    matriz.BellmanFord(0);
 
     return 0;
 }

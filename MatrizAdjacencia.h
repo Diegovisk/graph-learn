@@ -33,6 +33,8 @@ public:
     void ordenacao_topologica();
     void MTSPrim();
     void MTSKruskal();
+    void BellmanFord(Vertex);
+    std::vector<Aresta> listaDeArestas();
 };
 
 MatrizAdjacencia::MatrizAdjacencia(Vertex v, bool direcionado) : vertices(v), direcionado(direcionado)
@@ -274,26 +276,11 @@ void MatrizAdjacencia::MTSPrim()
 
 void MatrizAdjacencia::MTSKruskal()
 {
-    std::vector<Aresta> arestas;
+    std::vector<Aresta> arestas = this->listaDeArestas();
     std::vector<Aresta> mst;
 
     int pai[this->vertices];
     int peso[10000];
-
-    for (int v = 0; v <= this->vertices; v++)
-    {
-        for (int i = 0; i <= this->vertices; i++)
-        {
-            if (this->mat[v][i] > 0)
-            {
-                Aresta a;
-                a.origem = v;
-                a.destino = i;
-                a.peso = this->mat[v][i];
-                arestas.push_back(a);
-            }
-        }
-    }
 
     for (int i = 0; i <= this->vertices; i++)
     {
@@ -326,4 +313,70 @@ void MatrizAdjacencia::MTSKruskal()
     grafo.imprimir();
 }
 
+std::vector<Aresta> MatrizAdjacencia::listaDeArestas()
+{
+    std::vector<Aresta> arestas;
+
+    for (int v = 0; v <= this->vertices; v++)
+    {
+        for (int i = 0; i <= this->vertices; i++)
+        {
+            if (this->mat[v][i] > 0)
+            {
+                Aresta a;
+                a.origem = v;
+                a.destino = i;
+                a.peso = this->mat[v][i];
+                arestas.push_back(a);
+            }
+        }
+    }
+    return arestas;
+}
+
+void MatrizAdjacencia::BellmanFord(Vertex origem)
+{
+    std::vector<Aresta> arestas = this->listaDeArestas();
+    int V = this->vertices;
+    int E = arestas.size();
+    int dist[this->vertices + 1];
+
+    //passo 1
+    for (int i = 0; i <= this->vertices; i++)
+        dist[i] = INFINITY;
+    dist[origem] = 0;
+
+    //passo 2
+    std::vector<Aresta>::iterator i;
+    for (i = arestas.begin(); i != arestas.end(); ++i)
+    {
+        int u = i->origem;
+        int v = i->destino;
+        int weight = i->peso;
+        if (dist[u] != INFINITY && dist[u] + weight < dist[v])
+            dist[v] = dist[u] + weight;
+    }
+
+    // passo 3
+    for (i = arestas.begin(); i != arestas.end(); ++i)
+
+    {
+        int u = i->origem;
+        int v = i->destino;
+        int weight = i->peso;
+        if (dist[u] != INFINITY && dist[u] + weight < dist[v])
+        {
+            std::cout << "O grafico contem o ciclo de peso negativo" << std::endl;
+            return;
+        }
+    }
+
+    std::cout << "BellmanFord: distancia da origem: " << origem << std::endl;
+    for (int i = 0; i <= this->vertices; i++)
+    {
+        std::cout << "v: " << i << " d: " << dist[i] << std::endl;
+    }
+
+    return;
+}
 #endif

@@ -3,7 +3,7 @@
 
 typedef int Vertex;
 typedef int Weight;
-#define INFINITY 100000000
+#define INFINITY INT_MAX
 
 struct Aresta
 {
@@ -28,6 +28,8 @@ public:
     virtual void ordenacao_topologica() = 0;
     virtual void MTSPrim() = 0;
     virtual void MTSKruskal() = 0;
+    virtual void BellmanFord(Vertex) = 0;
+    virtual std::vector<Aresta> listaDeArestas() = 0;
 
 protected:
     virtual void DFS_interno(Vertex v, Vertex *visitado) = 0;
